@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Stock {
@@ -20,13 +21,11 @@ public class Stock {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
-	@NotBlank
-	@Min(1)
+	@NotBlank	
 	@Column(name="name")
 	String name;
 	
-	@NotBlank
-	@Min(1)
+	@NotNull
 	@Column(name="current_price")
 	Long currentPrice;
 	

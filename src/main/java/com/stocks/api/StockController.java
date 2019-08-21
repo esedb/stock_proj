@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.stocks.entity.Stock;
@@ -28,6 +29,16 @@ public class StockController {
 	
 	@Autowired
 	StockRepository stock_repo;
+	
+	@RequestMapping(value = {"/", "/api"}, method = {RequestMethod.GET, RequestMethod.POST}) 
+	public List<Stock> home(){
+		List<Stock> stock_list = stock_repo.findAll();
+		if(stock_list.isEmpty()) {
+			throw new NoResultException("There is no stock associated with this URL");
+			
+		}
+		return stock_list;
+	}
 	
 	
 	@GetMapping("/api/stocks")
@@ -43,13 +54,12 @@ public class StockController {
 	}
 	@GetMapping("/api/stocks/{id}")
 	@ResponseBody
-	public ResponseEntity<Stock> getAmount(@PathVariable String id) {
+	public ResponseEntity<Stock> getAmount(@PathVariable("id") String id) {
 		
 		Optional<Stock> op_stock = stock_repo.findById(Long.parseLong(id));
 		Stock stock = op_stock.get();
 		if(stock == null) {
-			throw new NoResultException("There is no stock associated with this URL");
-			
+			throw new NoResultException("There is no stock associated with this URL");			
 		}
 		
 		return new ResponseEntity<Stock>(stock, HttpStatus.OK);
@@ -57,9 +67,9 @@ public class StockController {
 	}
 	
 			
-	@PutMapping("/api/sotcks/{id}")
+	@PutMapping("/api/stocks/{id}")
 	@ResponseBody
-	public ResponseEntity<Stock> updateStock(@RequestBody @Valid Stock stock, @PathVariable("amount") String id){		
+	public ResponseEntity<Stock> updateStock(@RequestBody @Valid Stock stock, @PathVariable("id") String id){		
 		
 		Optional<Stock> op_stock = stock_repo.findById(Long.parseLong(id));
 		Stock n_stock = op_stock.get();
@@ -80,7 +90,8 @@ public class StockController {
 	
 	@PostMapping("/api/stocks")
 	@ResponseBody
-	public ResponseEntity<Stock> createStock(@RequestBody @Valid Stock stock, @PathVariable("amount") String amount){
+	public ResponseEntity<Stock> createStock(@RequestBody @Valid Stock stock){
+		
 		stock.setCreate_time(new Date());
 		stock_repo.save(stock);		
 		return new ResponseEntity<Stock>(stock, HttpStatus.OK);
