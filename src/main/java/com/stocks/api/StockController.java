@@ -81,15 +81,11 @@ public class StockController {
 	@PostMapping("/api/stocks")
 	@ResponseBody
 	public ResponseEntity<Stock> createStock(@RequestBody @Valid Stock stock, @PathVariable("amount") String amount){
+		stock.setCreate_time(new Date());
 		stock_repo.save(stock);		
 		return new ResponseEntity<Stock>(stock, HttpStatus.OK);
 		
 	}
-	
-	
-	
-	
-	
 	
 
 }
