@@ -20,8 +20,7 @@ public class GeneratedStock {
 	StockRepository stock_repo;
 
 	@PostConstruct
-	public List<Stock> getAllStocks(){
-		System.out.println("initialize on startup");
+	public List<Stock> getAllStocks(){		
 		List<Stock> stocks = stock_repo.findAll();		
 		return stocks;
 	}
