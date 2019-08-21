@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.stocks.entity.Stock;
 import com.stocks.repo.StockRepository;
+import com.stocks.GeneratedStock;
 import com.stocks.CException.*;
 
 
@@ -30,38 +31,33 @@ public class StockController {
 	@Autowired
 	StockRepository stock_repo;
 	
-	@RequestMapping(value = {"/", "/api"}, method = {RequestMethod.GET, RequestMethod.POST}) 
-	public List<Stock> home(){
-		List<Stock> stock_list = stock_repo.findAll();
-		if(stock_list.isEmpty()) {
-			throw new NoResultException("There is no stock associated with this URL");
-			
-		}
-		return stock_list;
-	}
+	@Autowired
+	GeneratedStock in_memmory_stock;
 	
+	@RequestMapping(value = {"/", "/api"}, method = {RequestMethod.GET, RequestMethod.POST}) 
+	@ResponseBody
+	public List<Stock> home(){		
+		return in_memmory_stock.getAllStocks();
+	}	
 	
 	@GetMapping("/api/stocks")
 	public List<Stock> getStock() {
 		
 		List<Stock> stock_list = stock_repo.findAll();
 		if(stock_list.isEmpty()) {
-			throw new NoResultException("There is no stock associated with this URL");
-			
+			throw new NoResultException("There is no stock associated with this URL");			
 		}
 		return stock_list;
 		
 	}
 	@GetMapping("/api/stocks/{id}")
 	@ResponseBody
-	public ResponseEntity<Stock> getAmount(@PathVariable("id") String id) {
-		
+	public ResponseEntity<Stock> getAmount(@PathVariable("id") String id) {		
 		Optional<Stock> op_stock = stock_repo.findById(Long.parseLong(id));
 		Stock stock = op_stock.get();
 		if(stock == null) {
 			throw new NoResultException("There is no stock associated with this URL");			
-		}
-		
+		}		
 		return new ResponseEntity<Stock>(stock, HttpStatus.OK);
 		
 	}

@@ -27,8 +27,7 @@ public class Stock {
 	
 	@NotNull
 	@Column(name="current_price")
-	Long currentPrice;
-	
+	Long currentPrice;	
 	
 	
 	@Basic
